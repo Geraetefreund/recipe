@@ -1,0 +1,76 @@
+% !TEX program = lualatex
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+% ---- fonts: both ship with TeX Live (packages libertinus-fonts, tex-gyre) --
+\setmainfont{Libertinus Serif}   % successor of Linux Libertine
+\setsansfont{TeX Gyre Heros}     % Helvetica/Arial-style, like Liberation Sans
+
+% ---- colours and spacing ----------------------------------------------------
+\definecolor{recipegrey}{HTML}{434343}
+\definecolor{recipemuted}{HTML}{666666}
+\newcommand{\recipeintrogap}{\dimexpr 1.2em + 3mm\relax}  % space between intro and the two columns
+
+% ---- Lua library + data -----------------------------------------------------
+\directlua{recipe = dofile("recipe-lib.lua")}
+\newcommand{\recipeload}[1]{\directlua{recipe.load("#1")}}
+
+% ---- field accessors (each prints one part of the recipe) -------------------
+\newcommand{\recipetitle}{\directlua{recipe.title()}}
+\newcommand{\recipesource}{\directlua{recipe.source()}}
+\newcommand{\recipeintro}{\directlua{recipe.intro()}}
+\newcommand{\recipetimes}{\directlua{recipe.times()}}
+\newcommand{\recipeingredientlist}{\directlua{recipe.ingredients()}}
+\newcommand{\recipesteplist}{\directlua{recipe.steps()}}
+\newcommand{\recipenotelist}{\directlua{recipe.notes()}}
+
+% ---- styling hooks ----------------------------------------------------------
+\newcommand{\recipelabel}[1]{\textcolor{recipemuted}{#1}}
+\newcommand{\recipegroup}[1]{{\sffamily\bfseries\small\textcolor{recipemuted}{#1}}}
+\newlist{recipeingredients}{itemize}{1}
+\setlist[recipeingredients]{label={}, leftmargin=0pt, itemsep=0.35em, parsep=0pt, topsep=0pt}
+\newlist{recipesteps}{enumerate}{1}
+\setlist[recipesteps]{label=\textbf{\arabic*.}, leftmargin=1.6em, itemsep=0.7em, topsep=0pt}
+\newlist{recipenotes}{itemize}{1}
+\setlist[recipenotes]{label=\textbullet, leftmargin=1.2em, itemsep=0.3em, topsep=0pt}
+
+% ---- the full layout: \recipe -----------------------------------------------
+\newcommand{\recipe}{%
+  \begingroup\setlength{\parindent}{0pt}\sffamily
+  {\fontsize{26}{30}\selectfont\bfseries\color{recipegrey}
+    \hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=1000
+    \raggedright \recipetitle\par}
+  \ifnum\directlua{tex.sprint(recipe.has("source") and 1 or 0)}=1
+    \vspace{0.2em}{\large\color{recipemuted}\recipesource\par}
+  \fi
+  \vspace{0.8em}
+  {\rmfamily\recipeintro\par}
+  \vspace{\recipeintrogap}
+  \noindent
+  \begin{minipage}[t]{0.38\textwidth}
+    \small
+    {\recipetimes\par}
+    \vspace{1em}
+    \rmfamily\normalsize\recipeingredientlist
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.57\textwidth}
+    \rmfamily\recipesteplist
+    \ifnum\directlua{tex.sprint(recipe.has("notes") and 1 or 0)}=1
+      \vspace{1em}\recipenotelist
+    \fi
+  \end{minipage}
+  \endgroup}
+
+% =============================================================================
+\begin{document}
+\pagestyle{empty}
+
+\recipeload{recipe.lua}
+\recipe
+
+\end{document}
