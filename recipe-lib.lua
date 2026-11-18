@@ -1,6 +1,7 @@
 -- recipe-lib.lua : loads a recipe from a Lua table file and typesets it.
 local M = {}
 local data = {}
+local notes = {}    -- footnote texts collected while the ingredients are typeset
 
 ---------------------------------------------------------------- helpers
 local escmap = {
@@ -20,6 +21,7 @@ function M.load(path)
   local chunk, e = load(src, "@" .. found, "t", {})   -- sandboxed: no os/io
   if not chunk then error("recipe-lib: " .. e, 0) end
   data = chunk()
+  notes = {}
   if type(data) ~= "table" then error("recipe-lib: " .. path .. " must return a table", 0) end
 end
 
@@ -56,6 +58,10 @@ function M.ingredients()
       if it.name then main[#main+1] = esc(it.name) end
       s = s .. "\\textbf{" .. table.concat(main, " ") .. "}"
       if it.note then s = s .. ", " .. esc(it.note) end
+      if it.foot then
+        notes[#notes+1] = it.foot            -- text is typeset later, at the page bottom
+        s = s .. ("\\footnotemark[%d]"):format(#notes)
+      end
       emit(s)
     end
   end
@@ -66,6 +72,13 @@ function M.steps()
   emit("\\begin{recipesteps}")
   for _, st in ipairs(data.steps or {}) do emit("\\item " .. esc(st)) end
   emit("\\end{recipesteps}")
+end
+
+function M.footnotes()
+  for i, text in ipairs(notes) do
+    emit(("\\footnotetext[%d]{%s}"):format(i, esc(text)))
+  end
+  notes = {}
 end
 
 function M.notes()

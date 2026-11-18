@@ -13,8 +13,8 @@ return {
 
   ingredients = {
     { qty = "4",    name = "carrots", note = "trimmed, peeled and grated (180g), plus 10g green tops, washed and finely chopped" },
-    { qty = "1 tsp",  name = "Dijon mustard" },
-    { qty = "20g",    name = "sultanas" },
+    { qty = "1 tsp",  name = "dijon mustard" },
+    { qty = "20g",    name = "sultanas", foot = "Raisins or dried cranberries work too." },
     { qty = "5 tsp",  name = "white-wine vinegar" },
     { qty = "60ml",   name = "olive oil" },
     { name = "Fine sea salt and black pepper" },
@@ -22,11 +22,11 @@ return {
     { qty = "100g",   name = "plain yoghurt" },
     { qty = "½ tsp",  name = "caster sugar" },
     { qty = "10g",    name = "mint leaves", note = "finely chopped" },
-    { qty = "10g",    name = "parsley leaves", note = "finely chopped (or 20g if your carrots didn’t come with green tops)" },
+    { qty = "10g",    name = "parsley leaves", note = "finely chopped (or 20g if your carrots didn’t come with green tops)", foot = "Flat-leaf parsley has the best flavour here; curly parsley is fine if it is all you can find, but chop it a little finer." },
     { qty = "1",      name = "baby gem lettuce", note = "leaves separated and halved lengthways (100g)" },
     { qty = "1 white", name = "chicory", note = "root trimmed, leaves separated and halved lengthways (100g)" },
     { qty = "1",      name = "butterhead lettuce", note = "leaves separated, larger leaves halved lengthways (200g)" },
-    { qty = "30g",    name = "pistachio kernels", note = "toasted, lightly crushed in a mortar" },
+    { qty = "30g",    name = "pistachio kernels", note = "toasted, lightly crushed in a mortar", foot = "Toast them in a dry pan for 3 to 4 minutes & let them cool before crushing." },
   },
 
   steps = {

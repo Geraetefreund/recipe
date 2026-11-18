@@ -13,7 +13,7 @@
 % ---- colours and spacing ----------------------------------------------------
 \definecolor{recipegrey}{HTML}{434343}
 \definecolor{recipemuted}{HTML}{666666}
-\newcommand{\recipeintrogap}{\dimexpr 1.2em + 3mm\relax}  % space between intro and the two columns
+\newcommand{\recipeintrogap}{\dimexpr 1.2em + 5mm\relax}  % space between intro and the two columns
 
 % ---- Lua library + data -----------------------------------------------------
 \directlua{recipe = dofile("recipe-lib.lua")}
@@ -27,6 +27,7 @@
 \newcommand{\recipeingredientlist}{\directlua{recipe.ingredients()}}
 \newcommand{\recipesteplist}{\directlua{recipe.steps()}}
 \newcommand{\recipenotelist}{\directlua{recipe.notes()}}
+\newcommand{\recipefootnotes}{\directlua{recipe.footnotes()}}
 
 % ---- styling hooks ----------------------------------------------------------
 \newcommand{\recipelabel}[1]{\textcolor{recipemuted}{#1}}
@@ -38,12 +39,20 @@
 \newlist{recipenotes}{itemize}{1}
 \setlist[recipenotes]{label=\textbullet, leftmargin=1.2em, itemsep=0.3em, topsep=0pt}
 
+% ---- footnotes: marks read "1)", the text at the page bottom is "1) ..." ----
+%\renewcommand{\thefootnote}{\arabic{footnote})}
+\renewcommand{\thefootnote}{\arabic{footnote}}
+\makeatletter
+\renewcommand{\@makefntext}[1]{%
+  \hangindent=1.6em \hangafter=1 \noindent\hbox to 1.6em{\@thefnmark\hfil}#1}
+\makeatother
+
 % ---- the full layout: \recipe -----------------------------------------------
 \newcommand{\recipe}{%
   \begingroup\setlength{\parindent}{0pt}\sffamily
   {\fontsize{26}{30}\selectfont\bfseries\color{recipegrey}
-    \hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=1000
-    \raggedright \recipetitle\par}
+   \hyphenpenalty=10000 \exhyphenpenalty=10000 \pretolerance=10000 \raggedright
+   \recipetitle\par}   % no hyphenation in the title
   \ifnum\directlua{tex.sprint(recipe.has("source") and 1 or 0)}=1
     \vspace{0.2em}{\large\color{recipemuted}\recipesource\par}
   \fi
@@ -64,6 +73,7 @@
       \vspace{1em}\recipenotelist
     \fi
   \end{minipage}
+  \recipefootnotes   % footnote texts, set at the bottom of the page
   \endgroup}
 
 % =============================================================================
